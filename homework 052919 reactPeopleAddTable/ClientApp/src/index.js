@@ -1,19 +1,68 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
-import './index.css';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import { render } from 'react-dom';
+import PersonInfo from './textBoxes';
+import PeopleTable from './PeopleTable';
 
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
-const rootElement = document.getElementById('root');
+class App extends React.Component {
+    state = {
+        currentFirstName: '',
+        currentLastName: '',
+        currentAge: '',
+        allPeople: []
+    }
+    onFirstNameChange = e => {
+        this.setState({ currentFirstName: e.target.value })
+    }
 
-ReactDOM.render(
-  <BrowserRouter basename={baseUrl}>
-    <App />
-  </BrowserRouter>,
-  rootElement);
+    onLastNameChange = e => {
+        this.setState({ currentLastName: e.target.value })
+    }
 
-registerServiceWorker();
+    onAgeChange = e => {
+        this.setState({ currentAge: e.target.value })
+    }
+    onAddClick = () => {
+        const copy = [...this.state.allPeople];
+        const person = {
+            firstName: this.state.currentFirstName,
+            lastName: this.state.currentLastName,
+            age: this.state.currentAge
+        }
+        copy.push(person);
+
+        this.setState({
+            currentFirstName: '',
+            currentLastName: '',
+            currentAge: '',
+            allPeople: copy
+        })
+    }
+
+    onDeleteClick = (person) => {
+        const copy = [...this.state.allPeople];
+        let filtered = copy.filter(p => p.firstName !== person.firstName &&
+            p.lastName !== person.lastName && p.age !== person.age);
+        this.setState({ allPeople: filtered })
+    }
+
+    render() {
+        return (
+            <div className="container">
+                <PersonInfo
+                    currentFirstName={this.state.currentFirstName}
+                    currentLastName={this.state.currentLastName}
+                    currentAge={this.state.currentAge}
+                    firstNameChange={this.onFirstNameChange}
+                    lastNameChange={this.onLastNameChange}
+                    ageChange={this.onAgeChange}
+                    addClick={this.onAddClick}
+                />
+
+                <PeopleTable allPeople={this.state.allPeople}
+                    delete={this.onDeleteClick} />
+            </div>
+        )
+    }
+}
+render(<App />, document.getElementById('root'));
+
