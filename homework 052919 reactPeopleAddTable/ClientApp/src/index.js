@@ -57,7 +57,6 @@ class App extends React.Component {
                     ageChange={this.onAgeChange}
                     addClick={this.onAddClick}
                 />
-
                 <PeopleTable allPeople={this.state.allPeople}
                     delete={this.onDeleteClick} />
             </div>
